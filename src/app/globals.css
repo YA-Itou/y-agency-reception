@@ -1,0 +1,178 @@
+@import "tailwindcss";
+
+:root {
+  --paper: #f3eee4;
+  --ink: #15241c;
+  --ink-soft: #4d5e55;
+  --forest: #184a34;
+  --leaf: #1f7a4c;
+  --mint: #8fd4ab;
+  --gold: #c4a36a;
+  --card: rgba(255, 252, 247, 0.72);
+}
+
+@theme inline {
+  --font-sans: var(--font-sans);
+  --font-serif: var(--font-serif);
+  --color-paper: var(--paper);
+  --color-ink: var(--ink);
+  --color-forest: var(--forest);
+  --color-leaf: var(--leaf);
+  --color-gold: var(--gold);
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+  min-height: 100%;
+  background: var(--paper);
+  color: var(--ink);
+}
+
+body {
+  font-family: var(--font-sans), "Hiragino Maru Gothic ProN", "Yu Gothic", sans-serif;
+  letter-spacing: 0.02em;
+  font-feature-settings: "palt";
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+.kiosk-root {
+  min-height: 100dvh;
+  overflow: hidden;
+  position: relative;
+}
+
+.atmosphere {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(900px 520px at 8% -10%, rgba(47, 122, 74, 0.22), transparent 60%),
+    radial-gradient(760px 460px at 108% 112%, rgba(196, 163, 106, 0.2), transparent 55%),
+    radial-gradient(500px 340px at 70% 0%, rgba(143, 212, 171, 0.16), transparent 70%),
+    linear-gradient(180deg, #f7f3ea 0%, #efe6d6 100%);
+}
+
+.atmosphere::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.28;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E");
+  mix-blend-mode: multiply;
+}
+
+.glass {
+  background: var(--card);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow:
+    0 18px 50px rgba(24, 74, 52, 0.08),
+    0 1px 0 rgba(255, 255, 255, 0.8) inset;
+  backdrop-filter: blur(18px);
+}
+
+.fade-up {
+  animation: fade-up 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.fade-up-delay {
+  animation: fade-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: 0.08s;
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.86);
+    opacity: 0.55;
+  }
+  100% {
+    transform: scale(1.28);
+    opacity: 0;
+  }
+}
+
+.pulse-ring {
+  animation: pulse-ring 1.8s ease-out infinite;
+}
+
+.tile {
+  transition:
+    transform 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.22s ease,
+    background 0.22s ease;
+}
+
+.tile:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 24px 48px rgba(24, 74, 52, 0.12),
+    0 1px 0 rgba(255, 255, 255, 0.9) inset;
+}
+
+.tile:active {
+  transform: translateY(0) scale(0.985);
+}
+
+.field {
+  width: 100%;
+  border-radius: 1.15rem;
+  border: 1px solid rgba(24, 74, 52, 0.12);
+  background: rgba(255, 255, 255, 0.78);
+  padding: 1.05rem 1.15rem;
+  color: var(--ink);
+  outline: none;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.field:focus {
+  border-color: rgba(31, 122, 76, 0.55);
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(31, 122, 76, 0.12);
+}
+
+.primary-btn {
+  background: linear-gradient(180deg, #2a8a58 0%, #184a34 100%);
+  color: #f7f4ec;
+  box-shadow: 0 12px 28px rgba(24, 74, 52, 0.28);
+}
+
+.primary-btn:disabled {
+  opacity: 0.45;
+  box-shadow: none;
+}
+
+.admin-shell {
+  min-height: 100dvh;
+  background:
+    radial-gradient(900px 400px at 0% 0%, rgba(31, 122, 76, 0.12), transparent 50%),
+    #f6f3ec;
+}
+
+@media (orientation: portrait) {
+  .portrait-lock {
+    display: flex !important;
+    pointer-events: auto;
+  }
+}
