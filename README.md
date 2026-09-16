@@ -4,8 +4,9 @@
 
 ## できること
 
-- お約束 / 面接 / 配送 / 営業の受付
+- お約束 / 面接 / 配送 / 営業 / その他の受付
 - 無操作 15 秒でトップへ復帰
+- 完了画面からボタンでトップへ復帰
 - Chatwork 通知（置き配も含む）
 - 管理者向け受付履歴（`/admin`）
 
@@ -27,7 +28,7 @@ cp .env.example .env.local
 | `ADMIN_PASSWORD` | 履歴画面の共有パスワード |
 | `ADMIN_SESSION_SECRET` | セッション署名用の長いランダム文字列 |
 
-Supabase の SQL Editor で `supabase/migrations/001_reception_logs.sql` を実行してください。RLS を有効化しているため、来訪者からの直接アクセスはできません。サーバーはサービスロールで読み書きします。
+Supabase の SQL Editor で `supabase/migrations` 内の SQL を番号順に実行してください。既存環境では未適用のマイグレーションのみを実行します。RLS を有効化しているため、来訪者からの直接アクセスはできません。サーバーはサービスロールで読み書きします。
 
 ```bash
 npm run dev

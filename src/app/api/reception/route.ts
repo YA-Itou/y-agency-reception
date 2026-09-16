@@ -10,7 +10,8 @@ function isPayload(value: unknown): value is ReceptionPayload {
     visitType === "appointment" ||
     visitType === "interview" ||
     visitType === "delivery" ||
-    visitType === "sales"
+    visitType === "sales" ||
+    visitType === "other"
   );
 }
 
@@ -22,6 +23,11 @@ function validate(payload: ReceptionPayload): string | null {
   }
   if (payload.visitType === "interview") {
     if (!payload.visitorName?.trim()) return "お名前は必須です";
+  }
+  if (payload.visitType === "other") {
+    if (!payload.companyName?.trim() || !payload.visitorName?.trim()) {
+      return "会社名とお名前は必須です";
+    }
   }
   if (payload.visitType === "delivery") {
     if (!payload.carrier) return "業者を選択してください";

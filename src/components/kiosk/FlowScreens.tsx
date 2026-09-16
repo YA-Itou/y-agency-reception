@@ -169,7 +169,7 @@ export function SalesScreen({
   );
 }
 
-export function CompleteScreen({ message }: { message: string }) {
+export function CompleteScreen({ message, onHome }: { message: string; onHome: () => void }) {
   return (
     <div className="fade-up flex flex-1 flex-col items-center justify-center text-center">
       <div className="relative mb-8 flex h-28 w-28 items-center justify-center">
@@ -181,7 +181,10 @@ export function CompleteScreen({ message }: { message: string }) {
       <p className="max-w-3xl whitespace-pre-line text-4xl font-medium leading-relaxed text-[#15241c] lg:text-5xl">
         {message}
       </p>
-      <p className="mt-8 text-sm text-[#8a948e]">まもなくトップ画面に戻ります</p>
+      <div className="mt-8">
+        <PrimaryButton onClick={onHome}>トップへ戻る</PrimaryButton>
+      </div>
+      <p className="mt-5 text-sm text-[#8a948e]">まもなくトップ画面に戻ります</p>
     </div>
   );
 }

@@ -15,6 +15,8 @@ export function buildChatworkBody(payload: ReceptionPayload): string {
       return deliveryBody(payload);
     case "sales":
       return salesBody();
+    case "other":
+      return otherBody(payload);
   }
 }
 
@@ -93,6 +95,18 @@ function salesBody() {
 新規のご提案・営業の方が来訪されました。
 受付画面にて名刺・資料投入ボックスへの投函をご案内しています。
 [hr]※対面対応は不要です。後ほど受付ボックスをご確認ください。[/info]`;
+}
+
+function otherBody(payload: ReceptionPayload) {
+  const company = payload.companyName?.trim() ?? "";
+  const name = payload.visitorName?.trim() ?? "";
+
+  return `[toall]
+[info][title]🔔 【その他】来訪者のお知らせ[/title]
+その他のご用件でお客様がお見えです。ご対応をお願いします。
+
+会社名：${company}
+お名前：${name} 様[/info]`;
 }
 
 export async function sendChatworkMessage(body: string): Promise<{

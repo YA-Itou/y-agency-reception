@@ -3,7 +3,7 @@
 import type { ReactNode } from "react";
 
 type HomeCard = {
-  id: "appointment" | "interview" | "delivery" | "sales";
+  id: "appointment" | "interview" | "delivery" | "sales" | "other";
   title: string;
   en: string;
   hint: string;
@@ -67,6 +67,21 @@ const cards: HomeCard[] = [
       </svg>
     ),
   },
+  {
+    id: "other",
+    title: "その他",
+    en: "Other",
+    hint: "会社名とお名前をご入力ください",
+    accent: "from-[#718178] to-[#3e5147]",
+    icon: (
+      <svg viewBox="0 0 48 48" className="h-8 w-8" fill="none" aria-hidden>
+        <path d="M10 12h28a4 4 0 0 1 4 4v17a4 4 0 0 1-4 4H23l-9 6v-6h-4a4 4 0 0 1-4-4V16a4 4 0 0 1 4-4Z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
+        <circle cx="17" cy="25" r="1.7" fill="currentColor" />
+        <circle cx="24" cy="25" r="1.7" fill="currentColor" />
+        <circle cx="31" cy="25" r="1.7" fill="currentColor" />
+      </svg>
+    ),
+  },
 ];
 
 export function HomeScreen({ onSelect }: { onSelect: (id: HomeCard["id"]) => void }) {
@@ -78,13 +93,19 @@ export function HomeScreen({ onSelect }: { onSelect: (id: HomeCard["id"]) => voi
         </h1>
         <p className="mt-3 text-lg font-medium text-[#4d5e55]">ご用件をお選びください</p>
       </div>
-      <div className="fade-up-delay grid flex-1 grid-cols-2 gap-5 pb-2">
-        {cards.map((card) => (
+      <div className="fade-up-delay grid flex-1 grid-cols-6 gap-5 pb-2">
+        {cards.map((card, index) => (
           <button
             key={card.id}
             type="button"
             onClick={() => onSelect(card.id)}
-            className="tile glass flex h-full min-h-[170px] flex-col items-start justify-between rounded-[1.8rem] p-6 text-left lg:p-7"
+            className={`tile glass flex h-full min-h-[170px] flex-col items-start justify-between rounded-[1.8rem] p-6 text-left lg:p-7 ${
+              index === 3
+                ? "col-span-2 col-start-2"
+                : index === 4
+                  ? "col-span-2 col-start-4"
+                  : "col-span-2"
+            }`}
           >
             <div className={`flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br ${card.accent} text-white shadow-lg`}>
               {card.icon}

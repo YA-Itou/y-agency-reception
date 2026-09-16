@@ -114,3 +114,59 @@ export function InterviewScreen({
     </ScreenCard>
   );
 }
+
+export function OtherReceptionScreen({
+  companyName,
+  visitorName,
+  submitting,
+  onChange,
+  onBack,
+  onSubmit,
+}: {
+  companyName: string;
+  visitorName: string;
+  submitting: boolean;
+  onChange: (field: "companyName" | "visitorName", value: string) => void;
+  onBack: () => void;
+  onSubmit: () => void;
+}) {
+  const canSubmit = companyName.trim().length > 0 && visitorName.trim().length > 0;
+
+  return (
+    <ScreenCard className="mx-auto mt-6 w-full max-w-4xl">
+      <p className="text-[11px] tracking-[0.16em] text-[#c4a36a]">OTHER</p>
+      <h2 className="mt-2 text-[2rem] font-medium leading-snug text-[#15241c]">その他のご用件</h2>
+      <p className="mt-3 text-sm text-[#6b7a72]">会社名とお名前をご入力ください</p>
+      <form
+        className="mt-8 grid grid-cols-2 gap-5"
+        onSubmit={(event) => {
+          event.preventDefault();
+          if (canSubmit && !submitting) onSubmit();
+        }}
+      >
+        <Field
+          label="会社名"
+          required
+          value={companyName}
+          onChange={(value) => onChange("companyName", value)}
+          placeholder="株式会社〇〇"
+          autoComplete="organization"
+        />
+        <Field
+          label="お名前"
+          required
+          value={visitorName}
+          onChange={(value) => onChange("visitorName", value)}
+          placeholder="山田 太郎"
+          autoComplete="name"
+        />
+        <div className="col-span-2 mt-2 flex items-center justify-between">
+          <BackButton onClick={onBack} disabled={submitting} />
+          <PrimaryButton type="submit" disabled={!canSubmit || submitting}>
+            {submitting ? "送信中…" : "受付する"}
+          </PrimaryButton>
+        </div>
+      </form>
+    </ScreenCard>
+  );
+}

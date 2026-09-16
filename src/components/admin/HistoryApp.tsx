@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { VISIT_TYPE_LABEL } from "@/lib/constants";
 import type { ReceptionLog, VisitType } from "@/lib/types";
 
@@ -66,32 +66,37 @@ export function HistoryApp() {
     return `/api/admin/logs?${params.toString()}`;
   }, [from, to, visitType, status, page]);
 
-  const load = useCallback(async () => {
-    setLoading(true);
-    setError("");
-    const response = await fetch(query);
-    if (response.status === 401) {
-      router.push("/admin/login");
-      return;
-    }
-    const json = (await response.json()) as {
-      ok: boolean;
-      rows?: ReceptionLog[];
-      total?: number;
-      error?: string;
-    };
-    setLoading(false);
-    if (!json.ok) {
-      setError(json.error || "取得に失敗しました");
-      return;
-    }
-    setRows(json.rows ?? []);
-    setTotal(json.total ?? 0);
-  }, [query, router]);
-
   useEffect(() => {
+    let cancelled = false;
+
+    async function load() {
+      const response = await fetch(query);
+      if (cancelled) return;
+      if (response.status === 401) {
+        router.push("/admin/login");
+        return;
+      }
+      const json = (await response.json()) as {
+        ok: boolean;
+        rows?: ReceptionLog[];
+        total?: number;
+        error?: string;
+      };
+      if (cancelled) return;
+      setLoading(false);
+      if (!json.ok) {
+        setError(json.error || "取得に失敗しました");
+        return;
+      }
+      setRows(json.rows ?? []);
+      setTotal(json.total ?? 0);
+    }
+
     void load();
-  }, [load]);
+    return () => {
+      cancelled = true;
+    };
+  }, [query, router]);
 
   async function logout() {
     await fetch("/api/admin/logout", { method: "POST" });
@@ -126,6 +131,8 @@ export function HistoryApp() {
             className="field mt-1 py-2 text-sm"
             value={from}
             onChange={(event) => {
+              setLoading(true);
+              setError("");
               setPage(1);
               setFrom(event.target.value);
             }}
@@ -138,6 +145,8 @@ export function HistoryApp() {
             className="field mt-1 py-2 text-sm"
             value={to}
             onChange={(event) => {
+              setLoading(true);
+              setError("");
               setPage(1);
               setTo(event.target.value);
             }}
@@ -149,6 +158,8 @@ export function HistoryApp() {
             className="field mt-1 py-2 text-sm"
             value={visitType}
             onChange={(event) => {
+              setLoading(true);
+              setError("");
               setPage(1);
               setVisitType(event.target.value);
             }}
@@ -158,6 +169,7 @@ export function HistoryApp() {
             <option value="interview">面接</option>
             <option value="delivery">配送</option>
             <option value="sales">営業</option>
+            <option value="other">その他</option>
           </select>
         </label>
         <label className="text-xs text-[#6b7a72]">
@@ -166,6 +178,8 @@ export function HistoryApp() {
             className="field mt-1 py-2 text-sm"
             value={status}
             onChange={(event) => {
+              setLoading(true);
+              setError("");
               setPage(1);
               setStatus(event.target.value);
             }}
@@ -244,7 +258,11 @@ export function HistoryApp() {
         <button
           type="button"
           disabled={page <= 1}
-          onClick={() => setPage((value) => value - 1)}
+          onClick={() => {
+            setLoading(true);
+            setError("");
+            setPage((value) => value - 1);
+          }}
           className="rounded-full border border-[#184a34]/15 px-4 py-2 disabled:opacity-40"
         >
           前へ
@@ -255,7 +273,11 @@ export function HistoryApp() {
         <button
           type="button"
           disabled={page >= pageCount}
-          onClick={() => setPage((value) => value + 1)}
+          onClick={() => {
+            setLoading(true);
+            setError("");
+            setPage((value) => value + 1);
+          }}
           className="rounded-full border border-[#184a34]/15 px-4 py-2 disabled:opacity-40"
         >
           次へ
