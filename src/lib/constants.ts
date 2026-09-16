@@ -31,6 +31,7 @@ export const VISIT_TYPE_LABEL = {
   interview: "面接",
   delivery: "配送",
   sales: "営業",
+  other: "その他",
 } as const;
 
 export const COMPLETE_MESSAGE = {
@@ -39,4 +40,5 @@ export const COMPLETE_MESSAGE = {
   "delivery-call": "担当者を呼び出しました。\n少々お待ちください。",
   "delivery-dropoff":
     "ご案内ありがとうございました。\n荷物は所定の場所へお置きください。",
+  other: "受付内容を通知しました。\n少々お待ちください。",
 } as const;

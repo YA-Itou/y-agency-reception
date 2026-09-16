@@ -1,4 +1,4 @@
-export type VisitType = "appointment" | "interview" | "delivery" | "sales";
+export type VisitType = "appointment" | "interview" | "delivery" | "sales" | "other";
 
 export type DeliveryNeed = "stamp_required" | "drop_off" | "must_receive";
 
@@ -22,13 +22,15 @@ export type KioskStep =
   | "delivery-other"
   | "delivery-need"
   | "sales"
+  | "other"
   | "complete";
 
 export type CompleteKind =
   | "appointment"
   | "interview"
   | "delivery-call"
-  | "delivery-dropoff";
+  | "delivery-dropoff"
+  | "other";
 
 export type ReceptionPayload = {
   visitType: VisitType;

@@ -4,7 +4,7 @@ import { useCallback, useState } from "react";
 import { CARRIER_LABEL, COMPLETE_MESSAGE, IDLE_MS } from "@/lib/constants";
 import type { CarrierId, CompleteKind, KioskStep, ReceptionPayload } from "@/lib/types";
 import { useIdleReset } from "@/lib/use-idle-reset";
-import { AppointmentScreen, InterviewScreen } from "./FormScreens";
+import { AppointmentScreen, InterviewScreen, OtherReceptionScreen } from "./FormScreens";
 import { CarrierScreen, CompleteScreen, DeliveryNeedScreen, OtherCarrierScreen, SalesScreen } from "./FlowScreens";
 import { HomeScreen } from "./HomeScreen";
 import { KioskHeader } from "./KioskHeader";
@@ -96,6 +96,10 @@ export function KioskApp() {
               setSalesSent(false);
               setStep("sales");
             }
+            if (id === "other") {
+              setForm(emptyForm);
+              setStep("other");
+            }
           }}
         />
       )}
@@ -130,6 +134,25 @@ export function KioskApp() {
             void finish(
               { visitType: "interview", visitorName: form.visitorName },
               "interview",
+            )
+          }
+        />
+      )}
+      {step === "other" && (
+        <OtherReceptionScreen
+          companyName={form.companyName}
+          visitorName={form.visitorName}
+          submitting={submitting}
+          onChange={(field, value) => setForm((current) => ({ ...current, [field]: value }))}
+          onBack={goMenu}
+          onSubmit={() =>
+            void finish(
+              {
+                visitType: "other",
+                companyName: form.companyName,
+                visitorName: form.visitorName,
+              },
+              "other",
             )
           }
         />
@@ -202,7 +225,9 @@ export function KioskApp() {
       {submitting && step !== "complete" && (
         <div className="pointer-events-none absolute inset-0 z-20 bg-[#f3eee4]/35" />
       )}
-      {step === "complete" && <CompleteScreen message={COMPLETE_MESSAGE[completeKind]} />}
+      {step === "complete" && (
+        <CompleteScreen message={COMPLETE_MESSAGE[completeKind]} onHome={resetHome} />
+      )}
     </KioskFrame>
   );
 }
