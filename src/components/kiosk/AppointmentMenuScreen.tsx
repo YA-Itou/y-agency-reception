@@ -26,11 +26,6 @@ export function AppointmentMenuScreen({
               onClick={() => onSelect(item)}
               className="tile glass relative flex min-h-[140px] flex-col items-start justify-between rounded-[1.6rem] p-6 text-left"
             >
-              {item.draft ? (
-                <span className="absolute top-4 right-4 rounded-full bg-[#c4a36a]/18 px-2.5 py-0.5 text-[10px] tracking-widest text-[#8a6a32]">
-                  仮
-                </span>
-              ) : null}
               <div
                 className={`flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br ${item.accent} text-white shadow-md`}
               >
@@ -44,9 +39,9 @@ export function AppointmentMenuScreen({
                   />
                 </svg>
               </div>
-              <div className="mt-5 pr-8">
+              <div className="mt-5">
                 <p className="text-[11px] tracking-[0.16em] text-[#c4a36a]">{item.en}</p>
-                <p className="mt-1 text-2xl font-medium text-[#15241c]">{item.label}</p>
+                <p className="mt-1 text-[1.65rem] font-medium leading-snug text-[#15241c]">{item.label}</p>
                 <p className="mt-1 text-sm text-[#6b7a72]">{item.hint}</p>
               </div>
             </button>
