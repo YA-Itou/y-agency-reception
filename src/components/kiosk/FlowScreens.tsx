@@ -138,9 +138,11 @@ export function DeliveryNeedScreen({
 export function SalesScreen({
   submitting,
   onConfirm,
+  onBack,
 }: {
   submitting: boolean;
   onConfirm: () => void;
+  onBack?: () => void;
 }) {
   return (
     <ScreenCard className="mx-auto mt-4 w-full max-w-4xl">
@@ -155,7 +157,8 @@ export function SalesScreen({
         </p>
         <p>担当部署にて確認の上、必要な場合のみご連絡いたします。</p>
       </div>
-      <div className="mt-10 flex justify-center">
+      <div className={`mt-10 flex ${onBack ? "items-center justify-between" : "justify-center"}`}>
+        {onBack ? <BackButton onClick={onBack} disabled={submitting} /> : null}
         <button
           type="button"
           disabled={submitting}

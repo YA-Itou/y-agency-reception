@@ -10,6 +10,8 @@ export function AppointmentScreen({
   onChange,
   onBack,
   onSubmit,
+  title = "お約束のある方",
+  notice = "※事前の約束がない営業・ご提案の方はトップに戻り『新規のご提案・営業の方』をお選びください",
 }: {
   companyName: string;
   visitorName: string;
@@ -18,16 +20,20 @@ export function AppointmentScreen({
   onChange: (field: "companyName" | "visitorName" | "staffName", value: string) => void;
   onBack: () => void;
   onSubmit: () => void;
+  title?: string;
+  notice?: string | null;
 }) {
   const canSubmit = companyName.trim().length > 0 && visitorName.trim().length > 0;
 
   return (
     <ScreenCard className="mx-auto mt-6 w-full max-w-4xl">
       <p className="text-[11px] tracking-[0.16em] text-[#c4a36a]">APPOINTMENT</p>
-      <h2 className="mt-2 text-[2rem] font-medium leading-snug text-[#15241c]">お約束のある方</h2>
-      <p className="mt-4 rounded-2xl bg-[#184a34]/6 px-4 py-3 text-sm leading-relaxed text-[#3f5348]">
-        ※事前の約束がない営業・ご提案の方はトップに戻り『新規のご提案・営業の方』をお選びください
-      </p>
+      <h2 className="mt-2 text-[2rem] font-medium leading-snug text-[#15241c]">{title}</h2>
+      {notice ? (
+        <p className="mt-4 rounded-2xl bg-[#184a34]/6 px-4 py-3 text-sm leading-relaxed text-[#3f5348]">
+          {notice}
+        </p>
+      ) : null}
       <form
         className="mt-6 grid grid-cols-2 gap-5"
         onSubmit={(event) => {
@@ -76,19 +82,21 @@ export function InterviewScreen({
   onChange,
   onBack,
   onSubmit,
+  title = "採用・面接の方",
 }: {
   visitorName: string;
   submitting: boolean;
   onChange: (value: string) => void;
   onBack: () => void;
   onSubmit: () => void;
+  title?: string;
 }) {
   const canSubmit = visitorName.trim().length > 0;
 
   return (
     <ScreenCard className="mx-auto mt-6 w-full max-w-3xl">
       <p className="text-[11px] tracking-[0.16em] text-[#c4a36a]">INTERVIEW</p>
-      <h2 className="mt-2 text-[2rem] font-medium leading-snug text-[#15241c]">採用・面接の方</h2>
+      <h2 className="mt-2 text-[2rem] font-medium leading-snug text-[#15241c]">{title}</h2>
       <form
         className="mt-8 space-y-6"
         onSubmit={(event) => {
