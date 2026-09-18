@@ -151,8 +151,10 @@ export function SalesScreen({
       <div className="mt-6 space-y-4 text-lg leading-loose text-[#2b3b33]">
         <p>現在、事前の予約がないご提案・営業等のご面会はお断りしております。</p>
         <p>
-          誠にお手数ですが、ご持参いただきましたお名刺や資料等は、
-          <span className="mx-1 font-medium text-[#184a34]">タブレット横の『名刺・資料投入ボックス』</span>
+          誠にお手数ですが、ご持参いただきましたお名刺や資料等は
+          <br />
+          タブレット横の
+          <span className="font-medium text-[#184a34]">『名刺・資料投入ボックス』</span>
           へお入れください。
         </p>
         <p>担当部署にて確認の上、必要な場合のみご連絡いたします。</p>
