@@ -73,19 +73,19 @@ export function MockHomeScreen({ onSelect }: { onSelect: (id: MockHomeId) => voi
             key={card.id}
             type="button"
             onClick={() => onSelect(card.id)}
-            className="tile glass flex h-full min-h-[220px] flex-col items-start justify-center gap-8 rounded-[1.8rem] p-8 text-left lg:p-10"
+            className="tile glass flex h-full min-h-[220px] flex-col items-start justify-center gap-6 rounded-[1.8rem] p-7 text-left lg:p-8"
           >
             <div
-              className={`flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br ${card.accent} text-white shadow-lg lg:h-[4.5rem] lg:w-[4.5rem]`}
+              className={`flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br ${card.accent} text-white shadow-lg`}
             >
               {card.icon}
             </div>
             <div>
-              <p className="text-sm tracking-[0.18em] text-[#c4a36a]">{card.en}</p>
-              <p className="mt-2 font-[family-name:var(--font-serif)] text-5xl font-medium leading-tight tracking-[0.06em] text-[#15241c] lg:text-6xl">
+              <p className="text-[13px] tracking-[0.16em] text-[#c4a36a]">{card.en}</p>
+              <p className="mt-2 whitespace-nowrap font-[family-name:var(--font-serif)] text-[2.5rem] font-medium leading-none tracking-[0.04em] text-[#15241c]">
                 {card.title}
               </p>
-              <p className="mt-3 text-lg text-[#5b6c63] lg:text-xl">{card.hint}</p>
+              <p className="mt-3 text-base text-[#5b6c63]">{card.hint}</p>
             </div>
           </button>
         ))}
