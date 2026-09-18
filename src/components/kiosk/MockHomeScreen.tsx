@@ -16,7 +16,7 @@ type HomeCard = {
 const cards: HomeCard[] = [
   {
     id: "has-appointment",
-    title: "約束あり",
+    title: "お約束あり",
     en: "Appointment",
     hint: "ご用件をお選びください",
     accent: "from-[#1f7a4c] to-[#143d2e]",
@@ -32,7 +32,7 @@ const cards: HomeCard[] = [
   },
   {
     id: "no-appointment",
-    title: "約束なし",
+    title: "お約束なし",
     en: "Walk-in",
     hint: "資料ボックスへご案内します",
     accent: "from-[#c4a36a] to-[#8a6a32]",
