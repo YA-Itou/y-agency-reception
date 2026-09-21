@@ -60,36 +60,40 @@ const cards: HomeCard[] = [
 
 export function HomeScreen({ onSelect }: { onSelect: (id: HomeId) => void }) {
   return (
-    <div className="flex flex-1 flex-col">
-      <div className="fade-up mt-6 mb-6 text-center">
-        <h1 className="font-[family-name:var(--font-serif)] text-6xl font-medium tracking-[0.08em] text-[#15241c] lg:text-7xl">
-          受付
-        </h1>
-        <p className="mt-3 text-lg font-medium text-[#4d5e55]">ご用件をお選びください</p>
-      </div>
-      <div className="fade-up-delay grid flex-1 grid-cols-3 gap-5 pb-2">
-        {cards.map((card) => (
-          <button
-            key={card.id}
-            type="button"
-            onClick={() => onSelect(card.id)}
-            className="tile glass flex h-full min-h-[220px] flex-col items-start justify-center gap-6 rounded-[1.8rem] p-7 text-left lg:p-8"
-          >
-            <div
-              className={`flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br ${card.accent} text-white shadow-lg`}
+    <main className="flex flex-1 items-center py-4">
+      <div className="w-full">
+        <div className="fade-up mb-6 text-center">
+          <h1 className="font-[family-name:var(--font-serif)] text-6xl font-medium tracking-[0.08em] text-[#15241c] lg:text-7xl">
+            受付
+          </h1>
+          <p className="mt-3 text-lg font-medium text-[#4d5e55]">ご用件をお選びください</p>
+        </div>
+        <div className="fade-up-delay grid grid-cols-3 gap-5">
+          {cards.map((card) => (
+            <button
+              key={card.id}
+              type="button"
+              onClick={() => onSelect(card.id)}
+              className="tile glass w-full rounded-[1.8rem] p-7 text-left align-top lg:p-8"
             >
-              {card.icon}
-            </div>
-            <div>
-              <p className="text-[13px] tracking-[0.16em] text-[#c4a36a]">{card.en}</p>
-              <p className="mt-2 whitespace-nowrap font-[family-name:var(--font-serif)] text-[2.5rem] font-medium leading-none tracking-[0.04em] text-[#15241c]">
-                {card.title}
-              </p>
-              <p className="mt-3 text-base text-[#5b6c63]">{card.hint}</p>
-            </div>
-          </button>
-        ))}
+              <span className="flex flex-col items-start gap-6">
+                <span
+                  className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br ${card.accent} text-white shadow-lg`}
+                >
+                  {card.icon}
+                </span>
+                <span className="block">
+                  <span className="block text-[13px] tracking-[0.16em] text-[#c4a36a]">{card.en}</span>
+                  <span className="mt-2 block whitespace-nowrap font-[family-name:var(--font-serif)] text-[2.35rem] font-medium leading-none tracking-[0.04em] text-[#15241c]">
+                    {card.title}
+                  </span>
+                  <span className="mt-3 block text-base text-[#5b6c63]">{card.hint}</span>
+                </span>
+              </span>
+            </button>
+          ))}
+        </div>
       </div>
-    </div>
+    </main>
   );
 }
