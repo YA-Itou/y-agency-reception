@@ -1,4 +1,4 @@
-import type { DeliveryNeed, ReceptionPayload } from "./types";
+import type { ReceptionPayload } from "./types";
 
 function staffName(value?: string) {
   const trimmed = value?.trim();
@@ -24,14 +24,21 @@ function appointmentBody(payload: ReceptionPayload) {
   const name = payload.visitorName?.trim() ?? "";
   const company = payload.companyName?.trim() ?? "";
   const staff = staffName(payload.staffName);
+  const purpose = payload.appointmentPurpose?.trim();
+  const details = [
+    `企業名：${company}`,
+    `お名前：${name} 様`,
+    purpose ? `ご用件：${purpose}` : null,
+    `担当者：${staff}`,
+  ]
+    .filter(Boolean)
+    .join("\n");
 
   return `[toall]
 [info][title]🏢 【来客】${name}様（担当：${staff}）[/title]
 お客様がお見えです。
 
-企業名：${company}
-お名前：${name} 様
-担当者：${staff}
+${details}
 [hr]※担当者が未指定の場合は、お近くのスタッフがご対応をお願いします。[/info]`;
 }
 
@@ -49,44 +56,16 @@ function deliveryCarrierName(payload: ReceptionPayload) {
   if (payload.carrier === "その他") {
     return payload.companyName?.trim() || "その他";
   }
-  return payload.carrier ?? "";
+  return payload.carrier?.trim() ?? "";
 }
 
 function deliveryBody(payload: ReceptionPayload) {
-  const need: DeliveryNeed = payload.deliveryNeed ?? "stamp_required";
-
-  if (payload.carrier === "Nash") {
-    return `[toall]
-[info][title]🍱 【要対応】Nashが到着しました[/title]
-Nashの配達業者様が到着されました。受領・対面対応をお願いします。
-[hr]※冷凍品のため、受取後はすみやかに冷凍庫へ格納してください。[/info]`;
-  }
-
-  if (payload.carrier === "水の納品") {
-    return `[toall]
-[info][title]💧 【要対応】お水の納品が到着しました[/title]
-ウォーターサーバー用のお水が届きました。受領・対面対応をお願いします。
-[hr]※手運びでの受け取り対応をお願いします。（空ボトルの回収はありません）[/info]`;
-  }
-
   const carrier = deliveryCarrierName(payload);
-
-  if (need === "drop_off") {
-    return `[toall]
-[info][title]📦 【配送】置き配のご案内済み[/title]
-配送業者様が置き配（受領印不要）を選択されました。
-対面対応は不要です。荷物の到着をご確認ください。
-
-業者名：${carrier}
-要件：置き配・受領印不要[/info]`;
-  }
+  const carrierLine = carrier ? `\n\n業者名：${carrier}` : "";
 
   return `[toall]
-[info][title]📦 【配送】受領印のお願い[/title]
-配送業者様がいらっしゃいました。エントランスでのご対応をお願いします。
-
-業者名：${carrier}
-要件：受領印が必要[/info]`;
+[info][title]📦 【配送・集荷】担当者呼び出し[/title]
+配送・集荷の方が到着。担当者を呼び出してください${carrierLine}[/info]`;
 }
 
 function salesBody() {

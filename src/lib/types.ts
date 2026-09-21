@@ -2,41 +2,22 @@ export type VisitType = "appointment" | "interview" | "delivery" | "sales" | "ot
 
 export type DeliveryNeed = "stamp_required" | "drop_off" | "must_receive";
 
-export type CarrierId =
-  | "amazon"
-  | "yamato"
-  | "sagawa"
-  | "japanpost"
-  | "nash"
-  | "water"
-  | "other";
-
 export type ChatworkStatus = "sent" | "failed";
 
 export type KioskStep =
   | "welcome"
   | "home"
-  | "appointment"
-  | "interview"
-  | "delivery-carriers"
-  | "delivery-other"
-  | "delivery-need"
-  | "sales"
-  | "other"
+  | "appointment-menu"
+  | "appointment-form"
+  | "no-appointment"
   | "complete";
-
-export type CompleteKind =
-  | "appointment"
-  | "interview"
-  | "delivery-call"
-  | "delivery-dropoff"
-  | "other";
 
 export type ReceptionPayload = {
   visitType: VisitType;
   companyName?: string;
   visitorName?: string;
   staffName?: string;
+  appointmentPurpose?: string;
   carrier?: string;
   deliveryNeed?: DeliveryNeed;
 };

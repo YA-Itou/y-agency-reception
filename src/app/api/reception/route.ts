@@ -29,13 +29,6 @@ function validate(payload: ReceptionPayload): string | null {
       return "会社名とお名前は必須です";
     }
   }
-  if (payload.visitType === "delivery") {
-    if (!payload.carrier) return "業者を選択してください";
-    if (!payload.deliveryNeed) return "要件を選択してください";
-    if (payload.carrier === "その他" && !payload.companyName?.trim()) {
-      return "社名は必須です";
-    }
-  }
   return null;
 }
 
