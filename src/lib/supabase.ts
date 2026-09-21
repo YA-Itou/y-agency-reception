@@ -18,8 +18,7 @@ export async function insertReceptionLog(input: {
 }) {
   const supabase = getClient();
   if (!supabase) {
-    console.error("Supabase の環境変数が未設定です");
-    return;
+    throw new Error("Supabase の環境変数が未設定です");
   }
 
   const { error } = await supabase.from("reception_logs").insert({
@@ -35,7 +34,7 @@ export async function insertReceptionLog(input: {
   });
 
   if (error) {
-    console.error("reception_logs insert failed", error);
+    throw new Error(`reception_logs insert failed: ${error.message}`);
   }
 }
 

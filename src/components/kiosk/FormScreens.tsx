@@ -10,8 +10,7 @@ export function AppointmentScreen({
   onChange,
   onBack,
   onSubmit,
-  title = "お約束のある方",
-  notice = "※事前の約束がない営業・ご提案の方はトップに戻り『新規のご提案・営業の方』をお選びください",
+  title,
 }: {
   companyName: string;
   visitorName: string;
@@ -20,8 +19,7 @@ export function AppointmentScreen({
   onChange: (field: "companyName" | "visitorName" | "staffName", value: string) => void;
   onBack: () => void;
   onSubmit: () => void;
-  title?: string;
-  notice?: string | null;
+  title: string;
 }) {
   const canSubmit = companyName.trim().length > 0 && visitorName.trim().length > 0;
 
@@ -29,11 +27,6 @@ export function AppointmentScreen({
     <ScreenCard className="mx-auto mt-6 w-full max-w-4xl">
       <p className="text-[11px] tracking-[0.16em] text-[#c4a36a]">APPOINTMENT</p>
       <h2 className="mt-2 text-[2rem] font-medium leading-snug text-[#15241c]">{title}</h2>
-      {notice ? (
-        <p className="mt-4 rounded-2xl bg-[#184a34]/6 px-4 py-3 text-sm leading-relaxed text-[#3f5348]">
-          {notice}
-        </p>
-      ) : null}
       <form
         className="mt-6 grid grid-cols-2 gap-5"
         onSubmit={(event) => {
@@ -82,14 +75,14 @@ export function InterviewScreen({
   onChange,
   onBack,
   onSubmit,
-  title = "採用・面接の方",
+  title,
 }: {
   visitorName: string;
   submitting: boolean;
   onChange: (value: string) => void;
   onBack: () => void;
   onSubmit: () => void;
-  title?: string;
+  title: string;
 }) {
   const canSubmit = visitorName.trim().length > 0;
 
@@ -113,62 +106,6 @@ export function InterviewScreen({
           autoComplete="name"
         />
         <div className="flex items-center justify-between">
-          <BackButton onClick={onBack} disabled={submitting} />
-          <PrimaryButton type="submit" disabled={!canSubmit || submitting}>
-            {submitting ? "送信中…" : "受付する"}
-          </PrimaryButton>
-        </div>
-      </form>
-    </ScreenCard>
-  );
-}
-
-export function OtherReceptionScreen({
-  companyName,
-  visitorName,
-  submitting,
-  onChange,
-  onBack,
-  onSubmit,
-}: {
-  companyName: string;
-  visitorName: string;
-  submitting: boolean;
-  onChange: (field: "companyName" | "visitorName", value: string) => void;
-  onBack: () => void;
-  onSubmit: () => void;
-}) {
-  const canSubmit = companyName.trim().length > 0 && visitorName.trim().length > 0;
-
-  return (
-    <ScreenCard className="mx-auto mt-6 w-full max-w-4xl">
-      <p className="text-[11px] tracking-[0.16em] text-[#c4a36a]">OTHER</p>
-      <h2 className="mt-2 text-[2rem] font-medium leading-snug text-[#15241c]">その他のご用件</h2>
-      <p className="mt-3 text-sm text-[#6b7a72]">会社名とお名前をご入力ください</p>
-      <form
-        className="mt-8 grid grid-cols-2 gap-5"
-        onSubmit={(event) => {
-          event.preventDefault();
-          if (canSubmit && !submitting) onSubmit();
-        }}
-      >
-        <Field
-          label="会社名"
-          required
-          value={companyName}
-          onChange={(value) => onChange("companyName", value)}
-          placeholder="株式会社〇〇"
-          autoComplete="organization"
-        />
-        <Field
-          label="お名前"
-          required
-          value={visitorName}
-          onChange={(value) => onChange("visitorName", value)}
-          placeholder="山田 太郎"
-          autoComplete="name"
-        />
-        <div className="col-span-2 mt-2 flex items-center justify-between">
           <BackButton onClick={onBack} disabled={submitting} />
           <PrimaryButton type="submit" disabled={!canSubmit || submitting}>
             {submitting ? "送信中…" : "受付する"}

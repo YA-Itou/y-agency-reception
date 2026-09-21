@@ -1,11 +1,13 @@
 "use client";
 
-import { useCallback, useState } from "react";
-import { CARRIER_LABEL, COMPLETE_MESSAGE, IDLE_MS } from "@/lib/constants";
-import type { CarrierId, CompleteKind, KioskStep, ReceptionPayload } from "@/lib/types";
+import { useCallback, useRef, useState } from "react";
+import type { AppointmentMenuItem } from "@/lib/appointment-menu";
+import { CALL_STAFF_MESSAGE, IDLE_MS } from "@/lib/constants";
+import type { KioskStep, ReceptionPayload } from "@/lib/types";
 import { useIdleReset } from "@/lib/use-idle-reset";
-import { AppointmentScreen, InterviewScreen, OtherReceptionScreen } from "./FormScreens";
-import { CarrierScreen, CompleteScreen, DeliveryNeedScreen, OtherCarrierScreen, SalesScreen } from "./FlowScreens";
+import { AppointmentMenuScreen } from "./AppointmentMenuScreen";
+import { CompleteScreen, SalesScreen } from "./FlowScreens";
+import { AppointmentScreen, InterviewScreen } from "./FormScreens";
 import { HomeScreen } from "./HomeScreen";
 import { KioskHeader } from "./KioskHeader";
 import { KioskFrame } from "./ui";
@@ -20,60 +22,63 @@ const emptyForm = {
 export function KioskApp() {
   const [step, setStep] = useState<KioskStep>("welcome");
   const [form, setForm] = useState(emptyForm);
-  const [carrier, setCarrier] = useState<CarrierId | null>(null);
-  const [completeKind, setCompleteKind] = useState<CompleteKind>("appointment");
+  const [selectedMenu, setSelectedMenu] = useState<AppointmentMenuItem | null>(null);
   const [submitting, setSubmitting] = useState(false);
-  const [salesSent, setSalesSent] = useState(false);
+  const salesNotificationRef = useRef<Promise<void> | null>(null);
+  const receptionSubmittingRef = useRef(false);
 
   const resetHome = useCallback(() => {
     setStep("welcome");
     setForm(emptyForm);
-    setCarrier(null);
-    setSubmitting(false);
-    setSalesSent(false);
+    setSelectedMenu(null);
+    salesNotificationRef.current = null;
+    receptionSubmittingRef.current = false;
   }, []);
 
   const goMenu = useCallback(() => {
     setForm(emptyForm);
-    setCarrier(null);
+    setSelectedMenu(null);
     setStep("home");
   }, []);
 
   const notify = useCallback(async (payload: ReceptionPayload) => {
-    await fetch("/api/reception", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
+    try {
+      const response = await fetch("/api/reception", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        console.error("Reception notification failed", response.status);
+      }
+    } catch (error) {
+      console.error("Reception notification failed", error);
+    }
   }, []);
 
   const finish = useCallback(
-    async (payload: ReceptionPayload, kind: CompleteKind) => {
-      setSubmitting(true);
-      try {
-        await notify(payload);
-      } finally {
-        setCompleteKind(kind);
-        setSubmitting(false);
-        setStep("complete");
-      }
+    (payload: ReceptionPayload) => {
+      if (receptionSubmittingRef.current) return;
+      receptionSubmittingRef.current = true;
+      setStep("complete");
+      void notify(payload);
     },
     [notify],
   );
 
-  const sendSalesIfNeeded = useCallback(async () => {
-    if (salesSent) return;
-    setSalesSent(true);
-    setSubmitting(true);
-    try {
-      await notify({ visitType: "sales" });
-    } finally {
-      setSubmitting(false);
+  const sendSalesIfNeeded = useCallback(() => {
+    if (!salesNotificationRef.current) {
+      setSubmitting(true);
+      salesNotificationRef.current = notify({ visitType: "sales" }).finally(() => {
+        setSubmitting(false);
+      });
     }
-  }, [notify, salesSent]);
+    return salesNotificationRef.current;
+  }, [notify]);
 
   const onIdle = useCallback(() => {
-    if (step === "sales") {
+    if (step === "no-appointment") {
       void sendSalesIfNeeded().finally(resetHome);
       return;
     }
@@ -89,145 +94,66 @@ export function KioskApp() {
       {step === "home" && (
         <HomeScreen
           onSelect={(id) => {
-            if (id === "appointment") setStep("appointment");
-            if (id === "interview") setStep("interview");
-            if (id === "delivery") setStep("delivery-carriers");
-            if (id === "sales") {
-              setSalesSent(false);
-              setStep("sales");
+            if (id === "has-appointment") setStep("appointment-menu");
+            if (id === "no-appointment") {
+              salesNotificationRef.current = null;
+              setStep("no-appointment");
             }
-            if (id === "other") {
-              setForm(emptyForm);
-              setStep("other");
-            }
+            if (id === "delivery") void finish({ visitType: "delivery" });
           }}
         />
       )}
-      {step === "appointment" && (
+      {step === "appointment-menu" && (
+        <AppointmentMenuScreen
+          onBack={goMenu}
+          onSelect={(item) => {
+            setForm(emptyForm);
+            setSelectedMenu(item);
+            setStep("appointment-form");
+          }}
+        />
+      )}
+      {step === "appointment-form" && selectedMenu?.form === "interview" && (
+        <InterviewScreen
+          title={selectedMenu.label}
+          visitorName={form.visitorName}
+          submitting={submitting}
+          onChange={(value) => setForm((current) => ({ ...current, visitorName: value }))}
+          onBack={() => setStep("appointment-menu")}
+          onSubmit={() => void finish({ visitType: "interview", visitorName: form.visitorName })}
+        />
+      )}
+      {step === "appointment-form" && selectedMenu?.form === "appointment" && (
         <AppointmentScreen
+          title={selectedMenu.label}
           companyName={form.companyName}
           visitorName={form.visitorName}
           staffName={form.staffName}
           submitting={submitting}
           onChange={(field, value) => setForm((current) => ({ ...current, [field]: value }))}
-          onBack={goMenu}
+          onBack={() => setStep("appointment-menu")}
           onSubmit={() =>
-            void finish(
-              {
-                visitType: "appointment",
-                companyName: form.companyName,
-                visitorName: form.visitorName,
-                staffName: form.staffName,
-              },
-              "appointment",
-            )
+            void finish({
+              visitType: "appointment",
+              companyName: form.companyName,
+              visitorName: form.visitorName,
+              staffName: form.staffName,
+              appointmentPurpose: selectedMenu.label,
+            })
           }
         />
       )}
-      {step === "interview" && (
-        <InterviewScreen
-          visitorName={form.visitorName}
-          submitting={submitting}
-          onChange={(value) => setForm((current) => ({ ...current, visitorName: value }))}
-          onBack={goMenu}
-          onSubmit={() =>
-            void finish(
-              { visitType: "interview", visitorName: form.visitorName },
-              "interview",
-            )
-          }
-        />
-      )}
-      {step === "other" && (
-        <OtherReceptionScreen
-          companyName={form.companyName}
-          visitorName={form.visitorName}
-          submitting={submitting}
-          onChange={(field, value) => setForm((current) => ({ ...current, [field]: value }))}
-          onBack={goMenu}
-          onSubmit={() =>
-            void finish(
-              {
-                visitType: "other",
-                companyName: form.companyName,
-                visitorName: form.visitorName,
-              },
-              "other",
-            )
-          }
-        />
-      )}
-      {step === "delivery-carriers" && (
-        <CarrierScreen
-          onBack={goMenu}
-          onSelect={(id) => {
-            setCarrier(id);
-            if (id === "nash") {
-              void finish(
-                { visitType: "delivery", carrier: CARRIER_LABEL[id], deliveryNeed: "must_receive" },
-                "delivery-call",
-              );
-              return;
-            }
-            if (id === "water") {
-              void finish(
-                { visitType: "delivery", carrier: CARRIER_LABEL[id], deliveryNeed: "must_receive" },
-                "delivery-call",
-              );
-              return;
-            }
-            if (id === "other") {
-              setForm((current) => ({ ...current, companyName: "" }));
-              setStep("delivery-other");
-              return;
-            }
-            setStep("delivery-need");
-          }}
-        />
-      )}
-      {step === "delivery-other" && (
-        <OtherCarrierScreen
-          companyName={form.companyName}
-          submitting={submitting}
-          onChange={(value) => setForm((current) => ({ ...current, companyName: value }))}
-          onBack={() => setStep("delivery-carriers")}
-          onSubmit={() => setStep("delivery-need")}
-        />
-      )}
-      {step === "delivery-need" && carrier && (
-        <DeliveryNeedScreen
-          carrierLabel={
-            carrier === "other" && form.companyName.trim()
-              ? form.companyName.trim()
-              : CARRIER_LABEL[carrier]
-          }
-          submitting={submitting}
-          onBack={() => setStep(carrier === "other" ? "delivery-other" : "delivery-carriers")}
-          onSelect={(need) =>
-            void finish(
-              {
-                visitType: "delivery",
-                carrier: CARRIER_LABEL[carrier],
-                companyName: carrier === "other" ? form.companyName : undefined,
-                deliveryNeed: need,
-              },
-              need === "drop_off" ? "delivery-dropoff" : "delivery-call",
-            )
-          }
-        />
-      )}
-      {step === "sales" && (
+      {step === "no-appointment" && (
         <SalesScreen
           submitting={submitting}
+          onBack={goMenu}
           onConfirm={() => void sendSalesIfNeeded().finally(resetHome)}
         />
       )}
       {submitting && step !== "complete" && (
         <div className="pointer-events-none absolute inset-0 z-20 bg-[#f3eee4]/35" />
       )}
-      {step === "complete" && (
-        <CompleteScreen message={COMPLETE_MESSAGE[completeKind]} onHome={resetHome} />
-      )}
+      {step === "complete" && <CompleteScreen message={CALL_STAFF_MESSAGE} onHome={resetHome} />}
     </KioskFrame>
   );
 }

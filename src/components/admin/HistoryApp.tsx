@@ -37,12 +37,16 @@ function deliveryLabel(row: ReceptionLog) {
       ? "置き配"
       : row.delivery_need === "must_receive"
         ? "受取必須"
-        : "受領印";
+        : row.delivery_need === "stamp_required"
+          ? "受領印"
+          : null;
   const carrier =
     row.carrier === "その他" && row.company_name?.trim()
       ? `その他（${row.company_name}）`
-      : (row.carrier ?? "—");
-  return `${carrier} / ${need}`;
+      : row.carrier?.trim() || null;
+
+  if (!carrier && !need) return "担当者呼び出し";
+  return [carrier, need].filter(Boolean).join(" / ");
 }
 
 export function HistoryApp() {
