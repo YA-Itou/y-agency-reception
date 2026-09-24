@@ -24,47 +24,49 @@ export function AppointmentScreen({
   const canSubmit = visitorName.trim().length > 0;
 
   return (
-    <ScreenCard className="mx-auto mt-6 w-full max-w-4xl">
-      <p className="text-[11px] tracking-[0.16em] text-[#c4a36a]">APPOINTMENT</p>
-      <h2 className="mt-2 text-[2rem] font-medium leading-snug text-[#15241c]">{title}</h2>
-      <form
-        className="mt-6 grid grid-cols-2 gap-5"
-        onSubmit={(event) => {
-          event.preventDefault();
-          if (canSubmit && !submitting) onSubmit();
-        }}
-      >
-        <Field
-          label="貴社名"
-          value={companyName}
-          onChange={(value) => onChange("companyName", value)}
-          placeholder="株式会社〇〇"
-          autoComplete="organization"
-        />
-        <Field
-          label="お名前"
-          required
-          value={visitorName}
-          onChange={(value) => onChange("visitorName", value)}
-          placeholder="山田 太郎"
-          autoComplete="name"
-        />
-        <div className="col-span-2">
+    <main className="flex flex-1 items-center py-4">
+      <ScreenCard className="mx-auto w-full max-w-4xl">
+        <p className="text-[11px] tracking-[0.16em] text-[#c4a36a]">APPOINTMENT</p>
+        <h2 className="mt-2 text-[2rem] font-medium leading-snug text-[#15241c]">{title}</h2>
+        <form
+          className="mt-6 grid grid-cols-2 gap-5"
+          onSubmit={(event) => {
+            event.preventDefault();
+            if (canSubmit && !submitting) onSubmit();
+          }}
+        >
           <Field
-            label="訪問予定の担当者名"
-            value={staffName}
-            onChange={(value) => onChange("staffName", value)}
-            placeholder="未入力の場合は「未指定」として通知します"
+            label="貴社名"
+            value={companyName}
+            onChange={(value) => onChange("companyName", value)}
+            placeholder="株式会社〇〇"
+            autoComplete="organization"
           />
-        </div>
-        <div className="col-span-2 mt-2 flex items-center justify-between">
-          <BackButton onClick={onBack} disabled={submitting} />
-          <PrimaryButton type="submit" disabled={!canSubmit || submitting}>
-            {submitting ? "送信中…" : "受付する"}
-          </PrimaryButton>
-        </div>
-      </form>
-    </ScreenCard>
+          <Field
+            label="お名前"
+            required
+            value={visitorName}
+            onChange={(value) => onChange("visitorName", value)}
+            placeholder="山田 太郎"
+            autoComplete="name"
+          />
+          <div className="col-span-2">
+            <Field
+              label="訪問予定の担当者名"
+              value={staffName}
+              onChange={(value) => onChange("staffName", value)}
+              placeholder="未入力の場合は「未指定」として通知します"
+            />
+          </div>
+          <div className="col-span-2 mt-2 flex items-center justify-between">
+            <BackButton onClick={onBack} disabled={submitting} />
+            <PrimaryButton type="submit" disabled={!canSubmit || submitting}>
+              {submitting ? "送信中…" : "受付する"}
+            </PrimaryButton>
+          </div>
+        </form>
+      </ScreenCard>
+    </main>
   );
 }
 
@@ -86,31 +88,33 @@ export function InterviewScreen({
   const canSubmit = visitorName.trim().length > 0;
 
   return (
-    <ScreenCard className="mx-auto mt-6 w-full max-w-3xl">
-      <p className="text-[11px] tracking-[0.16em] text-[#c4a36a]">INTERVIEW</p>
-      <h2 className="mt-2 text-[2rem] font-medium leading-snug text-[#15241c]">{title}</h2>
-      <form
-        className="mt-8 space-y-6"
-        onSubmit={(event) => {
-          event.preventDefault();
-          if (canSubmit && !submitting) onSubmit();
-        }}
-      >
-        <Field
-          label="お名前（フルネーム）"
-          required
-          value={visitorName}
-          onChange={onChange}
-          placeholder="鈴木 花子"
-          autoComplete="name"
-        />
-        <div className="flex items-center justify-between">
-          <BackButton onClick={onBack} disabled={submitting} />
-          <PrimaryButton type="submit" disabled={!canSubmit || submitting}>
-            {submitting ? "送信中…" : "受付する"}
-          </PrimaryButton>
-        </div>
-      </form>
-    </ScreenCard>
+    <main className="flex flex-1 items-center py-4">
+      <ScreenCard className="mx-auto w-full max-w-3xl">
+        <p className="text-[11px] tracking-[0.16em] text-[#c4a36a]">INTERVIEW</p>
+        <h2 className="mt-2 text-[2rem] font-medium leading-snug text-[#15241c]">{title}</h2>
+        <form
+          className="mt-8 space-y-6"
+          onSubmit={(event) => {
+            event.preventDefault();
+            if (canSubmit && !submitting) onSubmit();
+          }}
+        >
+          <Field
+            label="お名前（フルネーム）"
+            required
+            value={visitorName}
+            onChange={onChange}
+            placeholder="鈴木 花子"
+            autoComplete="name"
+          />
+          <div className="flex items-center justify-between">
+            <BackButton onClick={onBack} disabled={submitting} />
+            <PrimaryButton type="submit" disabled={!canSubmit || submitting}>
+              {submitting ? "送信中…" : "受付する"}
+            </PrimaryButton>
+          </div>
+        </form>
+      </ScreenCard>
+    </main>
   );
 }
