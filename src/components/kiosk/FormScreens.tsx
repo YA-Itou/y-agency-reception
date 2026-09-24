@@ -21,7 +21,7 @@ export function AppointmentScreen({
   onSubmit: () => void;
   title: string;
 }) {
-  const canSubmit = companyName.trim().length > 0 && visitorName.trim().length > 0;
+  const canSubmit = visitorName.trim().length > 0;
 
   return (
     <ScreenCard className="mx-auto mt-6 w-full max-w-4xl">
@@ -36,7 +36,6 @@ export function AppointmentScreen({
       >
         <Field
           label="貴社名"
-          required
           value={companyName}
           onChange={(value) => onChange("companyName", value)}
           placeholder="株式会社〇〇"
