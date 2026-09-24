@@ -17,9 +17,7 @@ function isPayload(value: unknown): value is ReceptionPayload {
 
 function validate(payload: ReceptionPayload): string | null {
   if (payload.visitType === "appointment") {
-    if (!payload.companyName?.trim() || !payload.visitorName?.trim()) {
-      return "貴社名とお名前は必須です";
-    }
+    if (!payload.visitorName?.trim()) return "お名前は必須です";
   }
   if (payload.visitType === "interview") {
     if (!payload.visitorName?.trim()) return "お名前は必須です";

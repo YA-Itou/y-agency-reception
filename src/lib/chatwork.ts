@@ -26,7 +26,7 @@ function appointmentBody(payload: ReceptionPayload) {
   const staff = staffName(payload.staffName);
   const purpose = payload.appointmentPurpose?.trim();
   const details = [
-    `企業名：${company}`,
+    company ? `企業名：${company}` : null,
     `お名前：${name} 様`,
     purpose ? `ご用件：${purpose}` : null,
     `担当者：${staff}`,
